@@ -9,6 +9,7 @@ from ztools.utils import uuid4_hex
 
 
 def default_get_key_suffix(*args, **kwargs):
+    """Generate cache key suffix from function parameters."""
     r = {'args': args, 'kwargs': kwargs}
     return pickle.dumps(r)
 
@@ -17,6 +18,7 @@ def make_cache_key(key_prefix: str,
                    key_suffix: Union[Callable, str],
                    *args,
                    **kwargs) -> str:
+    """Generate cache key from function parameters"""
     if inspect.isfunction(key_suffix):
         suffix = key_suffix(*args, **kwargs)
     else:
@@ -44,6 +46,7 @@ class CacheStorageInterface(metaclass=abc.ABCMeta):
 
 
 class MemoryCacheStorage(CacheStorageInterface):
+    """Cache storage use memory"""
 
     def __init__(self):
         self.__storage = {}
@@ -68,6 +71,14 @@ class MemoryCacheStorage(CacheStorageInterface):
 
 
 class Cache:
+    """
+    Cache tool
+    >>> @Cache(key_prefix='cache_key')
+        def foo():
+            return True
+
+    storage: cache storage, default storage is use by memory.
+    """
     storage: CacheStorageInterface = MemoryCacheStorage()
 
     def __init__(self,
@@ -75,6 +86,13 @@ class Cache:
                  key_suffix: Union[Callable, str] = default_get_key_suffix,
                  cache_expires: Optional[int] = None,
                  ignore_exception: bool = True):
+        """
+        :param key_prefix: the prefix of cache key
+        :param key_suffix: the suffix of cache key
+        :param cache_expires: the expires of cache, seconds
+        :param ignore_exception: while is True, it will skip cache when
+                                 function raised exception
+        """
         self.key_prefix = key_prefix
         self.key_suffix = key_suffix
         self.cache_expires = cache_expires
@@ -118,7 +136,20 @@ class Cache:
                 raise result
             return result
 
-        def update_cached_result(result: Any, *args, **kwargs):
+        def update_cached_result(result: Any, *args, **kwargs) -> None:
+            """
+            method to update cache
+            >>> @Cache()
+            >>> def foo():
+                   return 1
+            >>> foo.update_cached_result(0)
+            >>> foo()
+                0
+
+            :param result: cache value
+            :param args: args for making cache key
+            :param kwargs: kwargs for making cache key
+            """
             key = self.make_cache_key(*args, **kwargs)
             if result is None:
                 self.storage.delete(key)
