@@ -68,13 +68,13 @@ class MemoryCacheStorage(CacheStorageInterface):
 
 
 class Cache:
-    storage: CacheStorageInterface = MemoryCacheStorage
+    storage: CacheStorageInterface = MemoryCacheStorage()
 
     def __init__(self,
                  key_prefix: str = '',
                  key_suffix: Union[Callable, str] = default_get_key_suffix,
                  cache_expires: Optional[int] = None,
-                 ignore_exception: bool = False):
+                 ignore_exception: bool = True):
         self.key_prefix = key_prefix
         self.key_suffix = key_suffix
         self.cache_expires = cache_expires
@@ -95,10 +95,7 @@ class Cache:
         r = pickle.loads(r)
         if r:
             if isinstance(r, Exception):
-                if self.ignore_exception:
-                    raise r
-                else:
-                    return
+                raise r
 
             return r
 
@@ -108,8 +105,17 @@ class Cache:
             key = self.make_cache_key(*args, **kwargs)
             result = self.get_cached_result(key)
             if not result:
-                result = func(*args, **kwargs)
+                try:
+                    result = func(*args, **kwargs)
+                except Exception as e:
+                    if self.ignore_exception:
+                        raise e
+
+                    result = e
                 self.storage.set(key, result, self.cache_expires)
+
+            if isinstance(result, Exception):
+                raise result
             return result
 
         def update_cached_result(result: Any, *args, **kwargs):
@@ -122,3 +128,6 @@ class Cache:
         functools.update_wrapper(wrapped, func)
         wrapped.update_cached_result = update_cached_result
         return wrapped
+
+
+cache = Cache
