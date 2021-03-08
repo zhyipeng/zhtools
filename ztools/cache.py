@@ -5,7 +5,7 @@ import pickle
 import time
 from typing import Any, Callable, Optional, Union, AnyStr
 
-from ztools.utils import uuid4_hex
+from ztools.random import uuid4_hex
 
 
 def default_get_key_suffix(*args, **kwargs):
@@ -74,8 +74,8 @@ class Cache:
     """
     Cache tool
     >>> @Cache(key_prefix='cache_key')
-        def foo():
-            return True
+    >>> def foo():
+    >>>     return True
 
     storage: cache storage, default storage is use by memory.
     """
@@ -141,7 +141,7 @@ class Cache:
             method to update cache
             >>> @Cache()
             >>> def foo():
-                   return 1
+            >>>    return 1
             >>> foo.update_cached_result(0)
             >>> foo()
                 0
