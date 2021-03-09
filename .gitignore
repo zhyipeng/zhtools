@@ -1,1 +1,9 @@
 .idea
+*.pyc
+*.egg-info
+dist/*
+build
+venv
+.DS_Store
+.vscode
+__pycache__
