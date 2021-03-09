@@ -3,8 +3,8 @@ from contextlib import contextmanager
 from inspect import isfunction
 from typing import Callable, Optional, Union
 
-from ztools import ignore_exception
-from ztools.exceptions import ModuleRequired
+from zhtools import ignore_exception
+from zhtools.exceptions import ModuleRequired
 
 _redis_pool = None
 _redis_client = None

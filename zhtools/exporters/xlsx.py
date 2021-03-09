@@ -1,7 +1,7 @@
 import abc
 from typing import Any, Union
 
-from ztools.exceptions import ModuleRequired
+from zhtools.exceptions import ModuleRequired
 
 
 class XlsxExporterInterface(metaclass=abc.ABCMeta):

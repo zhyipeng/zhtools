@@ -3,8 +3,8 @@ import inspect
 import pickle
 from typing import Any, Callable, Optional, Union
 
-from ztools.cache.storages import CacheStorageInterface, MemoryCacheStorage
-from ztools.random import uuid4_hex
+from zhtools.cache.storages import CacheStorageInterface, MemoryCacheStorage
+from zhtools.random import uuid4_hex
 
 
 def default_get_key_suffix(*args, **kwargs):

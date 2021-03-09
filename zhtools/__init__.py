@@ -3,7 +3,7 @@ import logging
 from contextlib import contextmanager
 from typing import Callable
 
-from ztools.type_hint import AnyNumber
+from zhtools.type_hint import AnyNumber
 
 
 def property_with_cache(func: Callable):

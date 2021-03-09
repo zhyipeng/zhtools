@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ztools.cache import cache
+from zhtools.cache import cache
 
 
 called_times = 0
