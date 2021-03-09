@@ -4,6 +4,7 @@ from inspect import isfunction
 from typing import Callable, Optional, Union
 
 from ztools import ignore_exception
+from ztools.exceptions import ModuleRequired
 
 _redis_pool = None
 _redis_client = None
@@ -24,7 +25,7 @@ def get_client():
             import redis
             return redis.Redis(connection_pool=_redis_client)
         except ImportError:
-            raise
+            raise ModuleRequired('redis')
 
 
 @contextmanager
