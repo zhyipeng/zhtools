@@ -40,5 +40,5 @@ start_of_date = date_to_datetime
 
 
 def end_of_date(dt: datetime.date) -> datetime.datetime:
-    return date_to_datetime(
-        dt + datetime.timedelta(days=1) - datetime.timedelta(seconds=1))
+    return date_to_datetime(dt) + datetime.timedelta(
+        days=1) - datetime.timedelta(seconds=1)
