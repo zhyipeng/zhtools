@@ -17,7 +17,18 @@ class XlsxReader(ReaderInterface):
         super().__init__(path)
         self.sheet_name = sheet_name
         self.sheet_idx = sheet_idx
-        self.wb = openpyxl.open(self.path)
+        self._wb = None
+        self.read_only = True
+
+    @property
+    def wb(self):
+        if not self._wb:
+            self._wb = openpyxl.open(self.path, read_only=self.read_only)
+
+        if self._wb.read_only != self.read_only:
+            self._wb = openpyxl.open(self.path, read_only=self.read_only)
+
+        return self._wb
 
     def get_sheet_name(self) -> Optional[str]:
         if self.sheet_name:
@@ -55,6 +66,8 @@ class XlsxReader(ReaderInterface):
                  idx: int = 0,
                  filter: Callable[[Any], bool] = None
                  ) -> Generator[Any, None, None]:
+        # ReadOnlyWorksheet is not supported iter_cols method.
+        self.read_only = False
         sheet = self.get_sheet()
         for col in sheet.iter_cols(min_col=idx + 1,
                                    max_col=idx + 1,

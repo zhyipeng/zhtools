@@ -3,6 +3,11 @@ from typing import Any, Union
 
 from zhtools.exceptions import ModuleRequired
 
+try:
+    from tqdm import tqdm
+except ImportError:
+    tqdm = lambda it: it
+
 
 class XlsxExporterInterface(metaclass=abc.ABCMeta):
 
@@ -75,7 +80,7 @@ class XlsxExporter(XlsxExporterInterface):
                     header: list[str],
                     data: list[list[Union[str, int, float]]]):
         ws.append(header)
-        for row in data:
+        for row in tqdm(data):
             ws.append(row)
 
     @staticmethod
@@ -83,5 +88,5 @@ class XlsxExporter(XlsxExporterInterface):
                      header: dict[str, str],
                      data: list[dict[str, Union[str, int, float]]]):
         ws.append(list(header.values()))
-        for item in data:
+        for item in tqdm(data):
             ws.append([item.get(k, '') for k in header])
