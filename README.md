@@ -18,10 +18,6 @@ Some simple tool methods like cache, exporter and so on.
 - \_\_init\_\_: Unclassified tools.
 
 
-## TODO
-- [ ] API service
-
-
 ## Update logs
 - **0.0.5** 2021-04-19: 
   - Added api service.
