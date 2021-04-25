@@ -15,10 +15,13 @@ Some simple tool methods like cache, exporter and so on.
 - timetools: Some date/time/timezone tools.
 - type_hint: Common type hints.
 - api_service: Simple way to define an api client.
+- enum: More practical enum.
 - \_\_init\_\_: Unclassified tools.
 
 
 ## Update logs
+- **0.0.6** 2021-04-25:
+  - Add enum module.
 - **0.0.5** 2021-04-19: 
   - Added api service.
   - Optimized the performance of XlsxReader.
