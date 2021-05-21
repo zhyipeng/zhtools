@@ -6,6 +6,7 @@ Some simple tool methods like cache, exporter and so on.
 - cache: A simple cache decorator.
 - code_generator: 
   - json2model: Generate pydantic model from json string.
+  - orms: Generate model code from create table sql.
 - exporters: Export data to a file like .xlsx and etc.
 - io_tools: Some io tool methods.
   - readers: Simple method to read data from a file like .xlsx and etc.
@@ -20,6 +21,9 @@ Some simple tool methods like cache, exporter and so on.
 
 
 ## Update logs
+- **0.0.7** 2021-05-21:
+  - Add singleton decorator.
+  - Add orm code generators.
 - **0.0.6** 2021-04-25:
   - Add enum module.
 - **0.0.5** 2021-04-19: 

@@ -55,3 +55,20 @@ def safe_divide(a: AnyNumber,
     """
     fm = f'%.{decimal_len}f'
     return fm % (a / b) if b else fm % while_zero
+
+
+def singleton(cls_):
+    """
+    singleton decorator for class.
+    """
+    init = cls_.__init__
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '__instance__'):
+            cls_.__instance__ = object.__new__(cls)
+            init(cls_.__instance__, *args, **kwargs)
+        return cls_.__instance__
+
+    cls_.__new__ = __new__
+    cls_.__init__ = lambda *args, **kwargs: None
+    return cls_
