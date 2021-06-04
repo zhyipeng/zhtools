@@ -11,6 +11,7 @@ class TortoiseColumn(Column):
         'tinyint': 'IntField',
         'varchar': 'CharField',
         'text': 'TextField',
+        'longtext': 'TextField',
         'char': 'CharField',
         'datetime': 'DatetimeField',
         'date': 'DateField',

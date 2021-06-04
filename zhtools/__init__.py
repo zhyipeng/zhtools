@@ -1,5 +1,6 @@
 import functools
 import logging
+from collections import defaultdict
 from contextlib import contextmanager
 from typing import Callable
 
@@ -72,3 +73,12 @@ def singleton(cls_):
     cls_.__new__ = __new__
     cls_.__init__ = lambda *args, **kwargs: None
     return cls_
+
+
+def group_by_key(data: list, key: str) -> dict[str, list]:
+    ret = defaultdict(list)
+    for item in data:
+        k = getattr(item, key)
+        ret[k].append(item)
+
+    return dict(ret)
