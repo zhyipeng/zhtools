@@ -22,6 +22,8 @@ Some simple tool methods like cache, exporter and so on.
 
 
 ## Update logs
+- **0.0.9** 2021-06-04:
+  - fix setup bug.
 - **0.0.8** 2021-06-04:
   - Add concurrents tools.
   - Add orm code generators command-line client.
