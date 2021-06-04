@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name='zhtools',
-    version='0.0.7',
+    version='0.0.8',
     author='zhyipeng',
     author_email='zhyipeng@outlook.com',
     description='Some simple tool methods like cache, exporter and so on.',

@@ -17,10 +17,14 @@ Some simple tool methods like cache, exporter and so on.
 - type_hint: Common type hints.
 - api_service: Simple way to define an api client.
 - enum: More practical enum.
+- concurrents: Some tools for concurrent base on multi process/thread/coroutine.
 - \_\_init\_\_: Unclassified tools.
 
 
 ## Update logs
+- **0.0.8** 2021-06-04:
+  - Add concurrents tools.
+  - Add orm code generators command-line client.
 - **0.0.7** 2021-05-21:
   - Add singleton decorator.
   - Add orm code generators.
