@@ -4,5 +4,3 @@ from .tortoise import TortoiseColumn
 
 tortoise_orm = CreateTableSQLToModel(TortoiseColumn)
 sqlalchemy_orm = CreateTableSQLToModel(SqlalchemyColumn)
-
-

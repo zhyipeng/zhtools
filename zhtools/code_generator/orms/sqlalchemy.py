@@ -1,3 +1,5 @@
+from typing import Union
+
 from zhtools.code_generator.orms.generator import Column
 
 
@@ -14,6 +16,12 @@ class SqlalchemyColumn(Column):
         'datetime': 'DateTime',
         'date': 'Date'
     }
+
+    def get_params(self) -> dict[str, Union[str, int, float, bool]]:
+        kw = super().get_params()
+        if self.primary_key:
+            kw['primary_key'] = True
+        return kw
 
     def render(self) -> str:
         kw = self.get_params()
