@@ -1,6 +1,5 @@
-from collections import Generator
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Generator, Optional
 
 from zhtools.exceptions import ModuleRequired
 from .interfaces import ReaderInterface

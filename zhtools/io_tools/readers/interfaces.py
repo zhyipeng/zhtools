@@ -1,7 +1,6 @@
 import abc
-from collections import Generator
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 
 
 class ReaderInterface(metaclass=abc.ABCMeta):

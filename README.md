@@ -19,10 +19,13 @@ Some simple tool methods like cache, exporter and so on.
 - enum: More practical enum.
 - concurrents: Some tools for concurrent base on multi process/thread/coroutine.
 - ctx: Some context tools.
+- async_tools: about python async/await.
 - \_\_init\_\_: Unclassified tools.
 
 
 ## Update logs
+- **0.0.11** 2021-10-21:
+  - add js-like *Promise*.
 - **0.0.10** 2021-06-25:
   - add go-like defer.
 - **0.0.9** 2021-06-04:
