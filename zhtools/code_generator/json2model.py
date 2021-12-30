@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from typing import Any, Union
 
-from zhtools.convertors import underline_to_camel_case
+from zhtools.data_structs.convertors import underline_to_camel_case
 
 try:
     from pydantic import BaseModel

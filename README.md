@@ -10,7 +10,7 @@ Some simple tool methods like cache, exporter and so on.
 - exporters: Export data to a file like .xlsx and etc.
 - io_tools: Some io tool methods.
   - readers: Simple method to read data from a file like .xlsx and etc.
-- convertors: Some unit convertors or string handlers.
+- data_structs: Some data structs implements and tools.
 - random: Uuid, random string and so on.
 - redis_helper: Some tools base on redis.
 - timetools: Some date/time/timezone tools.
@@ -24,6 +24,9 @@ Some simple tool methods like cache, exporter and so on.
 
 
 ## Update logs
+- **0.2.1** 2021-12-30:
+  - Move `convertors` to `data_structs.convertors`
+  - add some data_structs and methods.
 - **0.1.1** 2021-12-8:
   - Optimize timetools. Now can set global timezone.
 - **0.0.11** 2021-10-21:

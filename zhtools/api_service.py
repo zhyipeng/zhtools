@@ -166,7 +166,7 @@ class Service:
                     raise ExternalServiceError(error_code=str(resp.status))
                 elif resp.status >= 400:
                     logging.info('response got 4xx: %s', resp.content)
-                    raise ExternalUserServiceError(error_code=str(resp.status))
+                    raise ExternalServiceError(error_code=str(resp.status))
 
                 try:
                     ret = await resp.json()
