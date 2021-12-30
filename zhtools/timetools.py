@@ -64,3 +64,20 @@ def date_to_datetime_range(dt: datetime.date,
                            with_tz: bool = True,
                            ) -> tuple[datetime.datetime, datetime.datetime]:
     return start_of_date(dt, with_tz), end_of_date(dt, with_tz)
+
+
+def clean_datetime(dt: datetime.datetime) -> datetime.datetime:
+    """any datetime to aware datetime"""
+    tz = TZ or datetime.timezone.utc
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=tz)
+        dt = tz.fromutc(dt)
+    else:
+        dt = dt.astimezone(tz)
+
+    return dt
+
+
+def format_datetime(dt: datetime.datetime) -> str:
+    dt = clean_datetime(dt)
+    return dt.strftime(datetime_format)
