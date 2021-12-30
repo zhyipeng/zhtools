@@ -1,9 +1,8 @@
-import os
 import re
 import traceback
 from typing import Any, List, Tuple, Type, Union
 
-from zhtools.convertors import underline_to_camel_case
+from zhtools.data_structs.convertors import underline_to_camel_case
 
 TYPES = {
     'int': 'IntCol',

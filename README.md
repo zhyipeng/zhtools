@@ -24,6 +24,9 @@ Some simple tool methods like cache, exporter and so on.
 
 
 ## Update logs
+- **0.2.1** 2021-12-30:
+  - Move `convertors` to `data_structs.convertors`
+  - add some data_structs and methods.
 - **0.1.1** 2021-12-8:
   - Optimize timetools. Now can set global timezone.
 - **0.0.11** 2021-10-21:
