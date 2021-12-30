@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Any
 
 
 def underline_to_camel_case(v: str) -> str:
@@ -60,3 +61,10 @@ def deconstruct_defaultdict(d: defaultdict | dict) -> dict:
         if isinstance(d[k], defaultdict):
             d[k] = deconstruct_defaultdict(d[k])
     return d
+
+
+def transpose_dict(data: dict) -> dict[Any, set]:
+    ret = defaultdict(set)
+    for k, v in data.items():
+        ret[v].add(k)
+    return dict(ret)

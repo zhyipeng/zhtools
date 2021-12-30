@@ -1,10 +1,11 @@
 import functools
+import inspect
 import logging
 from collections import defaultdict
 from contextlib import contextmanager
-from typing import Callable
+from typing import Any, Callable
 
-from zhtools.type_hint import AnyNumber
+from zhtools.type_hint import AnyCallable, AnyNumber
 
 
 def property_with_cache(func: Callable):
@@ -82,3 +83,18 @@ def group_by_key(data: list, key: str) -> dict[str, list]:
         ret[k].append(item)
 
     return dict(ret)
+
+
+def package_func_kwargs(func: AnyCallable,
+                        *args,
+                        **kwargs) -> dict[str, Any]:
+    """convert calling args to kwargs"""
+    if not args:
+        return kwargs
+
+    kw = {}
+    params = list(inspect.signature(func).parameters.keys())
+    for i, v in enumerate(args):
+        kw[params[i]] = v
+
+    return kw | kwargs
