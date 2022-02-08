@@ -20,10 +20,13 @@ Some simple tool methods like cache, exporter and so on.
 - concurrents: Some tools for concurrent base on multi process/thread/coroutine.
 - ctx: Some context tools.
 - async_tools: about python async/await.
+- security: some simple security methods.
 - \_\_init\_\_: Unclassified tools.
 
 
 ## Update logs
+- **0.2.2** 2022-01-08:
+  - Add AES encrypt/decrypt method. 
 - **0.2.1** 2021-12-30:
   - Move `convertors` to `data_structs.convertors`
   - add some data_structs and methods.
