@@ -1,3 +1,6 @@
+import sys
+from typing import Optional
+
 from zhtools.code_generator.orms import tortoise_orm, sqlalchemy_orm
 
 
@@ -17,9 +20,9 @@ commands = {
 }
 
 
-def execute_from_command_line(arvg=None) -> None:
+def execute_from_command_line(arvg: Optional[list[str]] = None) -> None:
     if not arvg:
-        return
+        arvg = sys.argv[:]
 
     assert arvg[0] in commands
     cmd = commands[arvg[0]]
