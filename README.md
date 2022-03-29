@@ -25,6 +25,8 @@ Some simple tool methods like cache, exporter and so on.
 
 
 ## Update logs
+- **0.2.3** 2022-03-29: 
+  - Fix & add cli command.
 - **0.2.2** 2022-01-08:
   - Add AES encrypt/decrypt method. 
 - **0.2.1** 2021-12-30:
