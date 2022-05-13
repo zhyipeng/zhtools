@@ -1,7 +1,8 @@
 import asyncio
+import functools
 import logging
 from asyncio.tasks import Task
-from typing import Any, Callable, Coroutine
+from typing import Any, Awaitable, Callable, Coroutine, TypeVar
 
 
 class Promise:
@@ -46,3 +47,25 @@ class Promise:
             tsk.add_done_callback(self.default_callback)
         else:
             asyncio.run(self._coroutine)
+
+
+T = TypeVar('T')
+
+
+def as_sync_func(loop: asyncio.AbstractEventLoop = None):
+    """decorate an async function to sync function"""
+
+    def decorator(func: Callable[[...], Awaitable[T]]) -> Callable[[...], T]:
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            nonlocal loop
+            if not loop:
+                if args and isinstance(args[0], asyncio.AbstractEventLoop):
+                    return args[0].run_until_complete(func(*args[1:], **kwargs))
+                else:
+                    loop = asyncio.get_running_loop()
+
+            return loop.run_until_complete(func(*args, **kwargs))
+        return wrapped
+
+    return decorator
