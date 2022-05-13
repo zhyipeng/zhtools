@@ -21,10 +21,14 @@ Some simple tool methods like cache, exporter and so on.
 - ctx: Some context tools.
 - async_tools: about python async/await.
 - security: some simple security methods.
+- log: simple logging config tools.
 - \_\_init\_\_: Unclassified tools.
 
 
 ## Update logs
+- **0.2.3** 2022-04-08: 
+  - Fix & add cli command.
+  - Add log module.
 - **0.2.2** 2022-01-08:
   - Add AES encrypt/decrypt method. 
 - **0.2.1** 2021-12-30:
