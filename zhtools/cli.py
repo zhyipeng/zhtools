@@ -35,6 +35,8 @@ def sort_requirements(requirements: str, newline: str = None):
                     others.append(line)
 
     if newline:
+        if not newline.endswith('\n'):
+            newline += '\n'
         items.append(newline)
     items.sort(key=lambda i: i[0].lower())
 
