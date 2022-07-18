@@ -1,111 +1,133 @@
-from unittest import TestCase
+import asyncio
+import time
 
-from zhtools.cache import cache
-
-
-called_times = 0
-
-
-@cache(key_prefix='test')
-def simple_cache():
-    global called_times
-    called_times += 1
-    return called_times
+from zhtools.cache import Empty, MemoryStorage, cache, get_func_name
+from zhtools.config import config
 
 
-called = False
+def test_get_func_name():
+    def func1():
+        pass
+
+    class Foo:
+
+        def func2(self):
+            pass
+
+        @classmethod
+        def func3(cls):
+            pass
+
+        @staticmethod
+        def func4():
+            pass
+
+        def __call__(self, *args, **kwargs):
+            pass
+
+    assert get_func_name(func1) == 'func1'
+    assert get_func_name(Foo().func2) == 'func2'
+    assert get_func_name(Foo.func2) == 'func2'
+    assert get_func_name(Foo.func3) == 'func3'
+    assert get_func_name(Foo.func4) == 'func4'
+    assert get_func_name(Foo()) == 'Foo'
 
 
-@cache(key_prefix='test1')
-def cache_with_params(a: int, b: int):
-    global called
-    called = True
-    return a + b
+def test_cache():
+    called = 0
+
+    @cache
+    def foo(i):
+        nonlocal called
+        called += 1
+        return i * i if i < 3 else None
+
+    assert called == 0
+    assert foo(1) == 1
+    assert called == 1
+    assert foo(2) == 4
+    assert called == 2
+    assert foo(2) == 4
+    assert called == 2
+    assert foo(4) is None
+    assert called == 3
+    assert foo(4) is None
+    assert called == 3
 
 
-called2 = False
+def test_method():
+    called = 0
+
+    class Foo:
+        @cache
+        def foo1(self, i):
+            nonlocal called
+            called += 1
+            return i * i
+
+    obj = Foo()
+    assert obj.foo1(1) == 1
+    assert called == 1
+    assert obj.foo1(1) == 1
+    assert called == 1
+    assert obj.foo1(2) == 4
+    assert called == 2
+
+    obj2 = Foo()
+    assert obj2.foo1(1) == 1
+    assert called == 3
+    assert obj2.foo1(1) == 1
+    assert called == 3
 
 
-@cache(key_prefix='test2')
-def cache_with_ignore_exception(a, b):
-    global called2
-    called2 = True
-    return a / b
+def test_classmethod():
+    called = 0
+
+    class Foo:
+        @cache
+        @classmethod
+        def foo1(cls, i):
+            nonlocal called
+            called += 1
+            return i * i
+
+    obj = Foo
+    assert obj.foo1(1) == 1
+    assert called == 1
+    assert obj.foo1(1) == 1
+    assert called == 1
+    assert obj.foo1(2) == 4
+    assert called == 2
 
 
-called3 = False
+class AsyncMemoryStorage(MemoryStorage):
+    async def get(self, key: str):
+        val, expire = self.data.get(key, (Empty, 0))
+        if val is Empty:
+            return val
+
+        if expire < time.time():
+            del self.data[key]
+            return Empty
+        return val
+
+    async def setex(self, key: str, value, expire: float):
+        if expire is None:
+            expire = float('inf')
+        expire_at = time.time() + expire
+        self.data[key] = (value, expire_at)
 
 
-@cache(key_prefix='test3', ignore_exception=False)
-def cache_with_exception(a, b):
-    global called3
-    called3 = True
-    return a / b
+def test_async():
+    config.storage = AsyncMemoryStorage()
 
+    @cache
+    async def foo(i):
+        return i * i
 
-@cache(key_prefix='test4')
-def cache1():
-    return 1
+    async def run():
+        await foo(1)
+        await foo(1)
+        await foo(2)
 
-
-class TestCache(TestCase):
-
-    def test_use_cache(self):
-        self.assertEqual(called_times, 0)
-        ret = simple_cache()
-        self.assertEqual(called_times, 1)
-        self.assertEqual(ret, 1)
-        simple_cache()
-        self.assertEqual(called_times, 1)
-        self.assertEqual(ret, 1)
-
-    def test_use_cache_with_params(self):
-        global called
-        ret = cache_with_params(1, 2)
-        self.assertEqual(ret, 3)
-        self.assertTrue(called)
-
-        called = False
-        ret = cache_with_params(1, 2)
-        self.assertEqual(ret, 3)
-        self.assertFalse(called)
-
-        ret = cache_with_params(2, 2)
-        self.assertEqual(ret, 4)
-        self.assertTrue(called)
-
-    def test_cache_with_exception(self):
-        global called2
-        with self.assertRaises(ZeroDivisionError):
-            cache_with_ignore_exception(2, 0)
-
-        self.assertTrue(called2)
-
-        called2 = False
-        with self.assertRaises(ZeroDivisionError):
-            cache_with_ignore_exception(2, 0)
-
-        self.assertTrue(called2)
-
-    def test_cache_with_exception_and_not_ignore(self):
-        global called3
-        with self.assertRaises(ZeroDivisionError):
-            cache_with_exception(2, 0)
-
-        self.assertTrue(called3)
-
-        called3 = False
-        with self.assertRaises(ZeroDivisionError):
-            cache_with_exception(2, 0)
-
-        self.assertFalse(called3)
-
-    def test_update_cache_result(self):
-        ret = cache1()
-        self.assertEqual(ret, 1)
-        ret = cache1()
-        self.assertEqual(ret, 1)
-
-        cache1.update_cached_result(2)
-        ret = cache1()
-        self.assertEqual(ret, 2)
+    asyncio.run(run())

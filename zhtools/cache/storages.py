@@ -1,105 +1,55 @@
 import abc
-import os
-import pickle
 import time
-import shelve
-from typing import Any, AnyStr, Optional
+from typing import Any
+
+Empty = object()
 
 
-class CacheStorageInterface(metaclass=abc.ABCMeta):
+class Storage(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
-    def get(self, key: AnyStr) -> Any:
+    def get(self, key: str) -> Any:
         pass
 
-    @abc.abstractmethod
-    def set(self,
-            key: AnyStr,
-            value: AnyStr,
-            expire: Optional[int] = None) -> None:
-        pass
+    def set(self, key: str, value: Any):
+        self.setex(key, value, float('inf'))
 
     @abc.abstractmethod
-    def delete(self, key: AnyStr) -> None:
+    def setex(self, key: str, value: Any, expire: float):
         pass
 
 
-class MemoryCacheStorage(CacheStorageInterface):
-    """Cache storage use memory"""
+class AsyncStorage(Storage, metaclass=abc.ABCMeta):
+
+    @abc.abstractmethod
+    async def get(self, key: str) -> Any:
+        pass
+
+    async def set(self, key: str, value: Any):
+        await self.setex(key, value, float('inf'))
+
+    @abc.abstractmethod
+    async def setex(self, key: str, value: Any, expire: float):
+        pass
+
+
+class MemoryStorage(Storage):
 
     def __init__(self):
-        self.__storage = {}
-        self.__expires = {}
+        self.data: dict[str, tuple[Any, float]] = {}
 
-    def _get(self, key: AnyStr) -> Any:
-        return self.__storage.get(key)
+    def get(self, key: str) -> Any:
+        val, expire = self.data.get(key, (Empty, 0))
+        if val is Empty:
+            return val
 
-    def _set(self,
-             key: AnyStr,
-             value: AnyStr,
-             expire: Optional[int] = None) -> None:
-        self.__storage[key] = value
+        if expire < time.time():
+            del self.data[key]
+            return Empty
+        return val
 
-    def _delete(self, key: AnyStr) -> None:
-        self.__storage.pop(key, None)
-
-    def get(self, key: AnyStr) -> Any:
-        expire = self.__expires.get(key)
-        if expire and expire >= time.time():
-            self.delete(key)
-            return None
-        return self._get(key)
-
-    def set(self, key: AnyStr, value: AnyStr,
-            expire: Optional[int] = None) -> None:
-        self._set(key, value, expire)
-        if expire is not None:
-            self.__expires[key] = time.time() + expire
-
-    def delete(self, key: AnyStr) -> None:
-        self._delete(key)
-        self.__expires.pop(key, None)
-
-
-class FileCacheStorage(MemoryCacheStorage):
-    """Cache storage use file"""
-
-    def __init__(self, path: str = '/tmp'):
-        super().__init__()
-        self.path = path
-
-    def _get(self, key: AnyStr) -> Any:
-        with open(os.path.join(self.path, str(key)), 'rb') as f:
-            return pickle.load(f)
-
-    def _set(self,
-             key: AnyStr,
-             value: Any,
-             expire: Optional[int] = None) -> None:
-        with open(os.path.join(self.path, str(key)), 'wb') as f:
-            pickle.dump(value, f)
-
-    def _delete(self, key: AnyStr) -> None:
-        os.remove(os.path.join(self.path, key))
-
-
-class ShelveCacheStorage(MemoryCacheStorage):
-
-    def __init__(self, db: str = 'shelve_cache'):
-        super().__init__()
-        self.db = db
-
-    def _set(self,
-             key: AnyStr,
-             value: AnyStr,
-             expire: Optional[int] = None) -> None:
-        with shelve.open(self.db) as db:
-            db[key] = value
-
-    def _get(self, key: AnyStr) -> Any:
-        with shelve.open(self.db) as db:
-            return db.get(key)
-
-    def _delete(self, key: AnyStr) -> None:
-        with shelve.open(self.db) as db:
-            db.pop(key, None)
+    def setex(self, key: str, value: Any, expire: float):
+        if expire is None:
+            expire = float('inf')
+        expire_at = time.time() + expire
+        self.data[key] = (value, expire_at)
