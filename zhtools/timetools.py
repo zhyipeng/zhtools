@@ -1,12 +1,12 @@
 import datetime
-from typing import Optional, Union
+from typing import Union
+
+from zhtools.config import config
 
 datetime_format = '%Y-%m-%d %H:%M:%S'
 date_format = '%Y-%m-%d'
 compact_datetime_format = '%Y%m%d%H%M%S'
 compact_date_format = '%Y%m%d'
-
-TZ: Optional[datetime.timezone] = datetime.timezone.utc
 
 
 def set_tz(offset: Union[int, datetime.timedelta, datetime.timezone]):
@@ -16,12 +16,11 @@ def set_tz(offset: Union[int, datetime.timedelta, datetime.timezone]):
         offset = datetime.timezone(offset)
 
     assert isinstance(offset, datetime.timezone)
-    global TZ
-    TZ = offset
+    config.TZ = offset
 
 
 def local_datetime(days: int = None, with_tz: bool = True):
-    _tz = TZ if with_tz else None
+    _tz = config.TZ if with_tz else None
     dt = datetime.datetime.now(tz=_tz)
     td = None
     if days:
@@ -32,7 +31,7 @@ def local_datetime(days: int = None, with_tz: bool = True):
 
 
 def timestamp_to_datetime(ts: int, with_tz: bool = True) -> datetime.datetime:
-    _tz = TZ if with_tz else None
+    _tz = config.TZ if with_tz else None
     return datetime.datetime.fromtimestamp(ts, tz=_tz)
 
 
@@ -41,7 +40,7 @@ def datetime_to_timestamp(dt: datetime.datetime) -> int:
 
 
 def date_to_datetime(dt: datetime.date, with_tz: bool = True) -> datetime.datetime:
-    _tz = TZ if with_tz else None
+    _tz = config.TZ if with_tz else None
     return datetime.datetime(year=dt.year,
                              month=dt.month,
                              day=dt.day,
@@ -68,7 +67,7 @@ def date_to_datetime_range(dt: datetime.date,
 
 def clean_datetime(dt: datetime.datetime) -> datetime.datetime:
     """any datetime to aware datetime"""
-    tz = TZ or datetime.timezone.utc
+    tz = config.TZ or datetime.timezone.utc
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=tz)
         dt = tz.fromutc(dt)
