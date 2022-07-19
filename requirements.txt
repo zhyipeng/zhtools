@@ -1,3 +1,4 @@
 aiohttp~=3.7.4.post0
 Faker~=8.0.0
 requests~=2.25.1
+wrapt==1.13.2

@@ -1,6 +1,7 @@
 import asyncio
+import functools
 import inspect
-from typing import Any
+from typing import Any, Callable
 
 import wrapt
 
@@ -28,6 +29,15 @@ def make_cache_key(func: Wrapped, *args, **kwargs) -> str:
 
 
 class cache:
+    """
+    common cache decorator.
+    >>> from zhtools.config import config
+    >>> from zhtools.cache import cache, MemoryStorage, RedisStorage
+    >>> config.storage = RedisStorage()
+    >>> @cache
+    >>> def foo():
+            ...
+    """
 
     def __new__(cls,
                 func: Wrapped = None,
@@ -78,3 +88,23 @@ class cache:
         if is_async(func):
             return self.async_wrapper(func)
         return self.wrapper(func)
+
+
+class cond_lru_cache:
+    """use functools.lru_cache when use_cache return True"""
+
+    def __init__(self,
+                 use_cache: Callable[[...], bool],
+                 maxsize: int = 128,
+                 typed: bool = False):
+        self.use_cache = use_cache
+        self.maxsize = maxsize
+        self.typed = typed
+
+    @wrapt.decorator
+    def __call__(self, func, instance, args, kwargs):
+        deco_func = functools.lru_cache(self.maxsize, self.typed)(func)
+        if self.use_cache(*args, **kwargs):
+            return deco_func(*args, **kwargs)
+
+        return func(*args, **kwargs)

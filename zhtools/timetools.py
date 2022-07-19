@@ -1,5 +1,5 @@
 import datetime
-from typing import Union
+from typing import Union, Generator
 
 from zhtools.config import config
 
@@ -80,3 +80,25 @@ def clean_datetime(dt: datetime.datetime) -> datetime.datetime:
 def format_datetime(dt: datetime.datetime) -> str:
     dt = clean_datetime(dt)
     return dt.strftime(datetime_format)
+
+
+def iter_date(st: datetime.date,
+              et: datetime.date,
+              reverse=False) -> Generator[datetime.date, None, None]:
+    if reverse:
+        for t in reverse_iter_date(st, et):
+            yield t
+    else:
+        t = st
+        while t <= et:
+            yield t
+            t += datetime.timedelta(1)
+
+
+def reverse_iter_date(st: datetime.date,
+                      et: datetime.date
+                      ) -> Generator[datetime.date, None, None]:
+    t = et
+    while t >= st:
+        yield t
+        t -= datetime.timedelta(1)

@@ -1,7 +1,6 @@
 from collections import defaultdict
 from typing import Any
 
-
 def underline_to_camel_case(v: str) -> str:
     return v.replace('_', ' ').title().replace(' ', '')
 
