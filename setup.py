@@ -7,7 +7,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='zhtools',
-    version='0.3.0',
+    version='0.3.1',
     author='zhyipeng',
     author_email='zhyipeng@outlook.com',
     description='Some simple tool methods like cache, exporter and so on.',
