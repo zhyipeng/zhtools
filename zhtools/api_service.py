@@ -82,6 +82,7 @@ class Service:
     >>>    return await service.get_user(page, size)
     """
     HOST = None
+    TIMEOUT = 5
 
     def prepare_request(self,
                         data: Optional[dict],
@@ -107,7 +108,7 @@ class Service:
                                                    params=params,
                                                    json=_data,
                                                    data=form_data,
-                                                   timeout=5,
+                                                   timeout=self.TIMEOUT,
                                                    headers=headers or None)
         if resp.status_code == 404:
             logging.info('response got 404: %s', resp.url)
@@ -151,7 +152,7 @@ class Service:
                                        params=params,
                                        json=_data,
                                        data=form_data,
-                                       timeout=5,
+                                       timeout=self.TIMEOUT,
                                        headers=headers or None) as resp:
                 if resp.status == 404:
                     logging.info('response got 404: %s', resp.url)
