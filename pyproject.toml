@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zhtools"
+version = "1.0.1"
+authors = [
+    { name="zhyipeng", email="zhyipeng@outlook.com" },
+]
+description = "Some simple tool methods like cache, timetools and so on."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "wrapt>=1.15.0",
+]
+
+[project.optional-dependencies]
+httpx = ["httpx"]
+pydantic = ["pydantic"]
+redis = ["redis"]
+aioredis = ["aioredis"]
+
+[project.scripts]
+zhtools = "cli:main"

@@ -1,0 +1,8 @@
+Faker==18.10.1
+httpx==0.24.1
+loguru==0.7.0
+pydantic==1.10.9
+pytest==7.3.2
+pytest-asyncio==0.21.0
+twine==4.0.2
+wrapt==1.15.0
