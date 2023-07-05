@@ -42,6 +42,15 @@ class Dispatcher:
 
         return wrapper
 
+    def unregister(self, signal: Signal, handler: CommonWrapped):
+        if signal not in self.handlers:
+            return
+
+        if handler not in self.handlers[signal]:
+            return
+
+        self.handlers[signal].remove(handler)
+
     def send(self, signal: Signal, *args: P.args, **kwargs: P.kwargs) -> R:
         result = []
         for v in self.handlers[signal]:
