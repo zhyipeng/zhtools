@@ -22,6 +22,8 @@ Some simple tool methods like cache, timetools and so on.
 
 
 ## Update logs
+- **1.0.2** 2024-01-12:
+  - Fix AES encrypt/decrypt type hint.
 - **1.0.0** 2023-06-17:
   - Refactored code to used more type hint. Now only support python 3.11+.
   - Because of the ChatGPT, remove the `code_generator` module.

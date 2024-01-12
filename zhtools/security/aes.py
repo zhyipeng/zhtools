@@ -11,7 +11,7 @@ except ImportError:
 
 class AES:
 
-    def __init__(self, key: str, mode: _AES.AESMode = _AES.MODE_CBC):
+    def __init__(self, key: str, mode=_AES.MODE_CBC):
         self.key = key.encode()
         self.mode = mode
 
