@@ -1,48 +1,50 @@
 import asyncio
 from collections import defaultdict
-from typing import TypeAlias, overload
+from typing import Callable, TypeAlias, overload
 
 from zhtools.config import config
-from zhtools.typing import AnyCallable, CommonWrapper, CommonWrapped, P, R
 
 Signal: TypeAlias = str
 
 
-class Dispatcher:
-
+class Dispatcher[T, **P]:
     def __init__(self, multi=False):
-        self.handlers: dict[Signal, list[AnyCallable]] = defaultdict(list)
+        self.handlers: dict[Signal, list[Callable[P, T]]] = defaultdict(list)
         self.multi = multi
 
-    def _register(self, signal: Signal, handler: AnyCallable):
+    def _register(self, signal: Signal, handler: Callable[P, T]):
         if self.multi:
             self.handlers[signal].append(handler)
         else:
             if signal in self.handlers:
-                config.log_warning(f'Overwrite signal handler: {signal}-{handler.__name__}')
+                config.log_warning(
+                    f"Overwrite signal handler: {signal}-{handler.__name__}"
+                )
 
             self.handlers[signal] = [handler]
 
     @overload
-    def register(self, signal: Signal) -> CommonWrapper:
-        ...
+    def register(
+        self, signal: Signal
+    ) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
 
     @overload
-    def register(self, signal: Signal, handler: CommonWrapped) -> None:
-        ...
+    def register(self, signal: Signal, handler: Callable[P, T]) -> None: ...
 
-    def register(self, signal: Signal, handler: CommonWrapped = None) -> CommonWrapper | None:
+    def register(
+        self, signal: Signal, handler: Callable[P, T] | None = None
+    ) -> Callable[[Callable[P, T]], Callable[P, T]] | None:
         if handler is not None:
             self._register(signal, handler)
             return
 
-        def wrapper(func: CommonWrapped) -> CommonWrapper:
+        def wrapper(func: Callable[P, T]) -> Callable[P, T]:
             self._register(signal, func)
             return func
 
         return wrapper
 
-    def unregister(self, signal: Signal, handler: CommonWrapped):
+    def unregister(self, signal: Signal, handler: Callable[P, T]):
         if signal not in self.handlers:
             return
 
@@ -51,7 +53,9 @@ class Dispatcher:
 
         self.handlers[signal].remove(handler)
 
-    def send(self, signal: Signal, *args: P.args, **kwargs: P.kwargs) -> R:
+    def send(
+        self, signal: Signal, *args: P.args, **kwargs: P.kwargs
+    ) -> T | list[T] | None:
         result = []
         for v in self.handlers[signal]:
             ret = v(*args, **kwargs)
@@ -60,9 +64,10 @@ class Dispatcher:
         return result if self.multi else (result[0] if result else None)
 
 
-class AsyncDispatcher(Dispatcher):
-
-    async def send(self, signal: Signal, *args: P.args, **kwargs: P.kwargs) -> R:
+class AsyncDispatcher[T, **P](Dispatcher):
+    async def send(
+        self, signal: Signal, *args: P.args, **kwargs: P.kwargs
+    ) -> T | list[T] | None:
         tasks = []
         for v in self.handlers[signal]:
             tasks.append(v(*args, **kwargs))

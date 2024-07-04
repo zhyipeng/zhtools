@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zhtools"
-version = "1.0.2"
+version = "1.1.0"
 authors = [
     { name="zhyipeng", email="zhyipeng@outlook.com" },
 ]
 description = "Some simple tool methods like cache, timetools and so on."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
@@ -23,7 +23,7 @@ dependencies = [
 httpx = ["httpx"]
 pydantic = ["pydantic"]
 redis = ["redis"]
-aioredis = ["aioredis"]
+pycryptodome = ["pycryptodome"]
 
 [project.scripts]
 zhtools = "zhtools.cli:main"

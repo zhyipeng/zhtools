@@ -6,11 +6,10 @@ try:
     from Crypto import Random
     from Crypto.Cipher import AES as _AES
 except ImportError:
-    raise ModuleRequired('pycryptodome')
+    raise ModuleRequired("pycryptodome")
 
 
 class AES:
-
     def __init__(self, key: str, mode=_AES.MODE_CBC):
         self.key = key.encode()
         self.mode = mode
@@ -28,19 +27,19 @@ class AES:
     def pkcs7unpadding(text: str):
         length = len(text)
         unpadding = ord(text[length - 1])
-        return text[0:length - unpadding]
+        return text[0 : length - unpadding]
 
     def decrypt(self, content: str) -> str:
-        content = base64.b64decode(content)
-        iv = content[:16]
-        content = content[16:]
-        cipher = _AES.new(self.key, self.mode, iv)
+        content_b = base64.b64decode(content)
+        iv = content_b[:16]
+        content_b = content_b[16:]
+        cipher = _AES.new(self.key, self.mode, iv)  # type: ignore
         decrypt_bytes = cipher.decrypt(content)
         return self.pkcs7unpadding(decrypt_bytes.decode())
 
     def encrypt(self, content: str) -> str:
         iv = Random.new().read(16)
-        cipher = _AES.new(self.key, self.mode, iv)
+        cipher = _AES.new(self.key, self.mode, iv)  # type: ignore
         content_padding = self.pkcs7padding(content)
         encrypt_bytes = cipher.encrypt(content_padding.encode())
         return base64.b64encode(iv + encrypt_bytes).decode()

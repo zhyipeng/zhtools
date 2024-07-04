@@ -1,37 +1,28 @@
 from collections.abc import Callable
 from decimal import Decimal
-from typing import Concatenate, ParamSpec, Protocol, TypeVar, TypeAlias, Awaitable
+from typing import Awaitable, Concatenate, ParamSpec, Protocol, TypeAlias, TypeVar
 
 
 class ClassType(Protocol):
-
-    def __init__(self, *args, **kwargs):
-        ...
+    def __init__(self, *args, **kwargs): ...
 
 
 class LoggerType(Protocol):
+    def debug(self, msg: str, *args, **kwargs): ...
 
-    def debug(self, msg: str, *args, **kwargs):
-        ...
+    def info(self, msg: str, *args, **kwargs): ...
 
-    def info(self, msg: str, *args, **kwargs):
-        ...
+    def warning(self, msg: str, *args, **kwargs): ...
 
-    def warning(self, msg: str, *args, **kwargs):
-        ...
+    def error(self, msg: str, *args, **kwargs): ...
 
-    def error(self, msg: str, *args, **kwargs):
-        ...
+    def critical(self, msg: str, *args, **kwargs): ...
 
-    def critical(self, msg: str, *args, **kwargs):
-        ...
-
-    def exception(self, msg: str, *args, **kwargs):
-        ...
+    def exception(self, msg: str, *args, **kwargs): ...
 
 
-P = ParamSpec('P')
-R = TypeVar('R')
+P = ParamSpec("P")
+R = TypeVar("R")
 AwaitableR = Awaitable[R]
 
 CommonWrapped = Callable[P, R]
@@ -45,4 +36,4 @@ AnyAsyncCallable = Callable[P, AwaitableR]
 
 AnyNumber: TypeAlias = int | float | complex | Decimal
 
-NumberGeneric = TypeVar('NumberGeneric', bound=AnyNumber)
+NumberGeneric = TypeVar("NumberGeneric", bound=AnyNumber)

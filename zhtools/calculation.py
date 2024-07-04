@@ -1,11 +1,12 @@
 from zhtools.typing import AnyNumber
 
 
-def safe_divide(a: AnyNumber,
-                b: AnyNumber,
-                decimal_len: int = 2,
-                while_zero: AnyNumber = 0,
-                ) -> str:
+def safe_divide[T: AnyNumber](
+    a: T,
+    b: T,
+    decimal_len: int = 2,
+    while_zero: T = 0,
+) -> str:
     """
     Safe division avoiding ZeroDivisionError
     :param a: dividend
@@ -14,5 +15,5 @@ def safe_divide(a: AnyNumber,
     :param while_zero:
     :return: division result
     """
-    fm = f'%.{decimal_len}f'
-    return fm % (a / b) if b else fm % while_zero
+    fm = f"%.{decimal_len}f"
+    return fm % (a / b) if b else fm % while_zero  # type: ignore

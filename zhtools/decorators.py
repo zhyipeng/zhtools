@@ -1,48 +1,51 @@
-import functools
-from typing import TypeVar
+import datetime
 
-from zhtools.typing import ClassType, CommonWrapped, P, R
-
-
-T = TypeVar('T', bound=ClassType)
+from zhtools.data_structs.convertors import camel_case_to_underline
+from zhtools.timetools import Format
+from zhtools.typing import ClassType
 
 
-def singleton(cls_: T) -> T:
+def singleton[T: ClassType](cls_: T) -> T:
     """mark a class as singleton."""
     init = cls_.__init__
 
     def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, '__instance__'):
-            cls_.__instance__ = object.__new__(cls)
-            init(cls_.__instance__, *args, **kwargs)
-        return cls_.__instance__
+        if not hasattr(cls, "__instance__"):
+            cls_.__instance__ = object.__new__(cls)  # type: ignore
+            init(cls_.__instance__, *args, **kwargs)  # type: ignore
+        return cls_.__instance__  # type: ignore
 
     cls_.__new__ = __new__
     cls_.__init__ = lambda *args, **kwargs: None
     return cls_
 
 
-def property_with_cache(meth: CommonWrapped) -> R:
+def multi_by_date[T: ClassType](cls: T) -> T:
     """
-    Add an underscore before the property name for caching.
-    >>> class Foo
-    >>>     @property_with_cache
-    >>>     def prop1(self) -> str:
-    >>>         return 'prop1'
-
-    >>> foo = Foo()
-    >>> foo.prop1
-    True
-    >>> getattr(foo, '_prop1')
-    True
+    make a SQLAlchemy model class support multi-tables by date.
+    use `get_model` to get a model by date.
+    example:
+    >>> @multi_by_date
+    >>> class MyModel(Base):
+    >>>     ...
+    >>> m: type[MyModel] = MyModel.get_model(datetime.date.today())
     """
-    @functools.wraps(meth)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        instance = args[0]
-        property_name = meth.__name__
-        private_prop_name = '_' + property_name
-        if not getattr(instance, private_prop_name, False):
-            setattr(instance, private_prop_name, meth(*args, **kwargs))
-        return getattr(instance, private_prop_name, None)
+    cls.__abstract__ = True  # type: ignore
+    cls.__model_map__ = {}  # type: ignore
+    if not hasattr(cls, "__tablename__"):
+        cls.__tablename__ = camel_case_to_underline(cls.__name__)  # type: ignore
 
-    return property(wrapper)
+    def get_model_by_date(cls, date: datetime.date) -> T:
+        tablename = f"{cls.__tablename__}{date.strftime(Format.compact_date)}"
+        if tablename in cls.__model_map__:
+            return cls.__model_map__[tablename]
+
+        class _Model(cls):
+            __tablename__ = tablename
+            __date__ = date
+
+        cls.__model_map__[tablename] = _Model
+        return _Model
+
+    cls.get_model = classmethod(get_model_by_date)  # type: ignore
+    return cls

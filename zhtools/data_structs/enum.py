@@ -1,44 +1,32 @@
 import typing
 from enum import Enum as BaseEnum
-from typing import Generic, TypeVar
 
 
-class _Enum(BaseEnum):
-    def __new__(cls, value: typing.Any, label: str = None):
+class Enum[T](BaseEnum):
+    def __new__(cls, value: T, label: typing.Optional[str] = None):
         if label is not None:
             assert isinstance(label, str)
         obj = object.__new__(cls)
         obj._value_ = value
-        obj._label = label
+        obj._label = label  # type: ignore
         return obj
 
     @property
     def label(self) -> str:
-        return self._label or self.name
+        return self._label or self.name  # type: ignore
 
     @classmethod
-    def labels(cls) -> dict[typing.Any, str]:
+    def labels(cls) -> dict[T, str]:
         return {e.value: e.label for e in cls}
 
     @classmethod
-    def options(cls) -> tuple[tuple[typing.Any, str]]:
-        return tuple((e.value, e.label) for e in cls)
+    def options(cls) -> tuple[tuple[T, str]]:
+        return tuple((e.value, e.label) for e in cls)  # type: ignore
 
 
 if typing.TYPE_CHECKING:
-    T = TypeVar('T')
 
-    class Enum(Generic[T], BaseEnum):
-        @property
-        def value(self) -> T: ...
-        @property
-        def label(self) -> str: ...
-        @classmethod
-        def labels(cls) -> dict[T, str]: ...
-        @classmethod
-        def options(cls) -> tuple[tuple[T, str]]: ...
-
-    class IntEnum(Enum['int']):
+    class IntEnum(Enum):
         @property
         def value(self) -> int: ...
         @property
@@ -48,7 +36,7 @@ if typing.TYPE_CHECKING:
         @classmethod
         def options(cls) -> tuple[tuple[int, str]]: ...
 
-    class StrEnum(Enum['int']):
+    class StrEnum(Enum):
         @property
         def value(self) -> str: ...
         @property
@@ -59,6 +47,5 @@ if typing.TYPE_CHECKING:
         def options(cls) -> tuple[tuple[str, str]]: ...
 
 else:
-    Enum = _Enum
-    IntEnum = _Enum
-    StrEnum = _Enum
+    IntEnum = Enum
+    StrEnum = Enum

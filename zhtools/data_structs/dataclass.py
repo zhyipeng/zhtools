@@ -19,6 +19,7 @@ def nested_dataclass(*args, **kwargs):
     C(a=A(m=1))
     # The type of B.a is actually A
     """
+
     def wrapper(cls):
         cls = dataclass(cls, **kwargs)
         original_init = cls.__init__
@@ -29,8 +30,9 @@ def nested_dataclass(*args, **kwargs):
                 if is_dataclass(field_type) and isinstance(value, dict):
                     new_obj = field_type(**value)
                     kwargs[name] = new_obj
-            original_init(self, *args, **kwargs)
+            original_init(self, *args, **kwargs)  # type: ignore
 
         cls.__init__ = __init__
         return cls
+
     return wrapper(args[0]) if args else wrapper

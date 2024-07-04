@@ -22,6 +22,10 @@ Some simple tool methods like cache, timetools and so on.
 
 
 ## Update logs
+- **1.1.0** 2024-07-04:
+  - feat: `multi_by_date` decorator
+  - feat: Upgrade to python 3.12
+  - fix: Support more type hint
 - **1.0.2** 2024-01-12:
   - Fix AES encrypt/decrypt type hint.
 - **1.0.0** 2023-06-17:

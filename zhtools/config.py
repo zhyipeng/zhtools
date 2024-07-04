@@ -1,5 +1,4 @@
 import dataclasses
-import datetime
 import typing
 
 from zhtools.typing import LoggerType
@@ -7,24 +6,16 @@ from zhtools.typing import LoggerType
 if typing.TYPE_CHECKING:
     from zhtools.cache.storages import Storage
 
-__all__ = ['config']
-
-
-def _get_sys_tz():
-    return datetime.datetime.now().astimezone().tzinfo
+__all__ = ["config"]
 
 
 @dataclasses.dataclass
 class Config:
-    TZ: datetime.timezone = _get_sys_tz()
     logger: LoggerType | None = None
 
     # cache
-    _storage: 'Storage' = None
-    default_expire: int = None
-
-    def set_tz(self, tz: datetime.timezone):
-        self.TZ = tz
+    _storage: typing.Optional["Storage"] = None
+    default_expire: int | None = None
 
     def set_logger(self, logger: LoggerType):
         self.logger = logger
@@ -33,11 +24,12 @@ class Config:
     def storage(self):
         if self._storage is None:
             from zhtools.cache.storages import MemoryStorage
+
             self._storage = MemoryStorage()
         return self._storage
 
     @storage.setter
-    def storage(self, val: 'Storage'):
+    def storage(self, val: "Storage"):
         self._storage = val
 
     def log_debug(self, msg: str, *args, **kwargs):

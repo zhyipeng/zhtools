@@ -1,19 +1,25 @@
 import asyncio
+import typing
 from collections.abc import Coroutine
-from multiprocessing import Lock as MpLock, Process
-from threading import Lock as ThLock, Thread
-from typing import ClassVar, Generic, Type, TypeVar, Union
+from multiprocessing import Lock as MpLock
+from multiprocessing import Process
+from threading import Lock as ThLock
+from threading import Thread
+from typing import Generic, Type, TypeVar, Union
 
 from zhtools.typing import AnyCallable, CommonWrapped, CommonWrapper, P, R
+
+if typing.TYPE_CHECKING:
+    from multiprocessing.synchronize import Lock as TMpLock
 
 TASK_TYPE = Union[Thread, Process]
 TASK_CLI_TYPE = Type[TASK_TYPE]
 
-T = TypeVar('T', bound=TASK_TYPE)
+T = TypeVar("T", bound=TASK_TYPE)
 
 
 class ConcurrentMixin(Generic[T]):
-    _task_cli: ClassVar[Type[T]] = None
+    _task_cli: type[T]
 
     def __init__(self):
         self._tasks: list[T] = []
@@ -45,6 +51,7 @@ class ThreadConcurrent(ConcurrentMixin):
     >>> with ThreadConcurrent() as c:
     >>>     c.execute(print, 1)
     """
+
     _task_cli = Thread
 
 
@@ -54,6 +61,7 @@ class ProcessConcurrent(ConcurrentMixin):
     >>> with ThreadConcurrent() as c:
     >>>     c.execute(print, 1)
     """
+
     _task_cli = Process
 
 
@@ -112,10 +120,11 @@ def with_memory_thread_lock(f: CommonWrapped) -> CommonWrapper:
         lock = __thread_lock_map[k]
         with lock:
             return f(*args, **kwargs)
+
     return inner
 
 
-__process_lock_map: dict[str, MpLock] = {}
+__process_lock_map: dict[str, "TMpLock"] = {}
 
 
 def with_memory_process_lock(f: CommonWrapped) -> CommonWrapper:
@@ -126,6 +135,7 @@ def with_memory_process_lock(f: CommonWrapped) -> CommonWrapper:
         lock = __process_lock_map[k]
         with lock:
             return f(*args, **kwargs)
+
     return inner
 
 
@@ -140,4 +150,5 @@ def with_memory_coroutine_lock(f: CommonWrapped) -> CommonWrapper:
         lock = __coroutine_lock_map[k]
         async with lock:
             return await f(*args, **kwargs)
+
     return inner
