@@ -22,6 +22,8 @@ Some simple tool methods like cache, timetools and so on.
 
 
 ## Update logs
+- **1.1.1** 2024-07-16:
+  - fix: `Enum` define error
 - **1.1.0** 2024-07-04:
   - feat: `multi_by_date` decorator
   - feat: Upgrade to python 3.12

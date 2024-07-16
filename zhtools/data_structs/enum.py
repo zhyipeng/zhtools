@@ -1,8 +1,10 @@
 import typing
 from enum import Enum as BaseEnum
 
+T = typing.TypeVar('T')
 
-class Enum[T](BaseEnum):
+
+class Enum(typing.Generic[T], BaseEnum):
     def __new__(cls, value: T, label: typing.Optional[str] = None):
         if label is not None:
             assert isinstance(label, str)
