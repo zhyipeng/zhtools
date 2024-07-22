@@ -22,6 +22,9 @@ Some simple tool methods like cache, timetools and so on.
 
 
 ## Update logs
+- **1.2.0** 2024-07-22:
+  - fix: move `typing` to `typed`
+  - feat: `zt` command tools: support version tools.
 - **1.1.1** 2024-07-16:
   - fix: `Enum` define error
 - **1.1.0** 2024-07-04:

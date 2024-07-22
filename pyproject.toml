@@ -1,29 +1,24 @@
 [build-system]
-requires = ["setuptools>=65.0", "build"]
+requires = [ "setuptools>=65.0", "build",]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "zhtools"
-version = "1.1.1"
-authors = [
-    { name="zhyipeng", email="zhyipeng@outlook.com" },
-]
+version = "1.2.0"
 description = "Some simple tool methods like cache, timetools and so on."
 readme = "README.md"
 requires-python = ">=3.12"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-dependencies = [
-    "wrapt>=1.15.0",
-]
+classifiers = [ "Programming Language :: Python :: 3", "Operating System :: OS Independent",]
+dependencies = [ "wrapt>=1.15.0", "typer", "toml",]
+[[project.authors]]
+name = "zhyipeng"
+email = "zhyipeng@outlook.com"
 
 [project.optional-dependencies]
-httpx = ["httpx"]
-pydantic = ["pydantic"]
-redis = ["redis"]
-pycryptodome = ["pycryptodome"]
+httpx = [ "httpx",]
+pydantic = [ "pydantic",]
+redis = [ "redis",]
+pycryptodome = [ "pycryptodome",]
 
 [project.scripts]
-zhtools = "zhtools.cli:main"
+zt = "zhtools.cli:app"
