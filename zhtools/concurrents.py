@@ -7,7 +7,7 @@ from threading import Lock as ThLock
 from threading import Thread
 from typing import Generic, Type, TypeVar, Union
 
-from zhtools.typing import AnyCallable, CommonWrapped, CommonWrapper, P, R
+from zhtools.typed import AnyCallable, CommonWrapped, CommonWrapper, P, R
 
 if typing.TYPE_CHECKING:
     from multiprocessing.synchronize import Lock as TMpLock
@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
 TASK_TYPE = Union[Thread, Process]
 TASK_CLI_TYPE = Type[TASK_TYPE]
 
-T = TypeVar("T", bound=TASK_TYPE)
+T = TypeVar('T', bound=TASK_TYPE)
 
 
 class ConcurrentMixin(Generic[T]):
@@ -124,7 +124,7 @@ def with_memory_thread_lock(f: CommonWrapped) -> CommonWrapper:
     return inner
 
 
-__process_lock_map: dict[str, "TMpLock"] = {}
+__process_lock_map: dict[str, 'TMpLock'] = {}
 
 
 def with_memory_process_lock(f: CommonWrapped) -> CommonWrapper:

@@ -1,12 +1,12 @@
 import dataclasses
 import typing
 
-from zhtools.typing import LoggerType
+from zhtools.typed import LoggerType
 
 if typing.TYPE_CHECKING:
     from zhtools.cache.storages import Storage
 
-__all__ = ["config"]
+__all__ = ['config']
 
 
 @dataclasses.dataclass
@@ -14,7 +14,7 @@ class Config:
     logger: LoggerType | None = None
 
     # cache
-    _storage: typing.Optional["Storage"] = None
+    _storage: typing.Optional['Storage'] = None
     default_expire: int | None = None
 
     def set_logger(self, logger: LoggerType):
@@ -29,7 +29,7 @@ class Config:
         return self._storage
 
     @storage.setter
-    def storage(self, val: "Storage"):
+    def storage(self, val: 'Storage'):
         self._storage = val
 
     def log_debug(self, msg: str, *args, **kwargs):

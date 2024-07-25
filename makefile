@@ -1,4 +1,5 @@
 build:
+	rm -f dist/*
 	python -m build
 
 upload-test:

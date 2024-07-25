@@ -1,4 +1,4 @@
-from zhtools.typing import AnyNumber
+from zhtools.typed import AnyNumber
 
 
 def safe_divide[T: AnyNumber](
@@ -15,5 +15,5 @@ def safe_divide[T: AnyNumber](
     :param while_zero:
     :return: division result
     """
-    fm = f"%.{decimal_len}f"
+    fm = f'%.{decimal_len}f'
     return fm % (a / b) if b else fm % while_zero  # type: ignore

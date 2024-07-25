@@ -7,7 +7,7 @@ from typing import Any, Protocol, Self, overload
 import wrapt
 
 from zhtools.config import config
-from zhtools.typing import CommonWrapped, CommonWrapper
+from zhtools.typed import CommonWrapped, CommonWrapper
 
 from .storages import Empty
 
@@ -43,7 +43,7 @@ class cache[T, **P]:
 
     @staticmethod
     def default_make_cache_key(func: Callable[P, T], *args, **kwargs):
-        return f"{get_func_name(func)}:{(args, kwargs)}"
+        return f'{get_func_name(func)}:{(args, kwargs)}'
 
     @overload
     def __new__(cls) -> Self: ...
