@@ -6,7 +6,7 @@ try:
     from Crypto import Random
     from Crypto.Cipher import AES as _AES
 except ImportError:
-    raise ModuleRequired("pycryptodome")
+    raise ModuleRequired('pycryptodome')
 
 
 class AES:
@@ -34,7 +34,7 @@ class AES:
         iv = content_b[:16]
         content_b = content_b[16:]
         cipher = _AES.new(self.key, self.mode, iv)  # type: ignore
-        decrypt_bytes = cipher.decrypt(content)
+        decrypt_bytes = cipher.decrypt(content_b)
         return self.pkcs7unpadding(decrypt_bytes.decode())
 
     def encrypt(self, content: str) -> str:

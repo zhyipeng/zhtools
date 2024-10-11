@@ -22,6 +22,8 @@ Some simple tool methods like cache, timetools and so on.
 
 
 ## Update logs
+- **1.2.3** 2024-07-25
+  - fix: aes decrypt
 - **1.2.0** 2024-07-22:
   - fix: move `typing` to `typed`
   - feat: `zt` command tools: support version tools.

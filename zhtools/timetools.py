@@ -1,13 +1,23 @@
 import datetime
 from collections.abc import Generator
-from enum import StrEnum
+from enum import IntEnum, StrEnum
 
 
 class Format(StrEnum):
-    datetime = "%Y-%m-%d %H:%M:%S"
-    date = "%Y-%m-%d"
-    compact_datetime = "%Y%m%d%H%M%S"
-    compact_date = "%Y%m%d"
+    datetime = '%Y-%m-%d %H:%M:%S'
+    date = '%Y-%m-%d'
+    compact_datetime = '%Y%m%d%H%M%S'
+    compact_date = '%Y%m%d'
+
+
+class TimeSecConst(IntEnum):
+    second = 1
+    minute = 60
+    hour = minute * 60
+    day = hour * 24
+    week = day * 7
+    month = day * 30
+    year = day * 365
 
 
 def date_to_datetime(dt: datetime.date) -> datetime.datetime:
@@ -84,7 +94,7 @@ class ZHDatetime:
                 case 19:
                     dt = datetime.datetime.strptime(dt, Format.datetime)
                 case _:
-                    raise ValueError(f"Invalid datetime string: {dt}")
+                    raise ValueError(f'Invalid datetime string: {dt}')
         elif isinstance(dt, datetime.datetime):
             pass
         elif isinstance(dt, datetime.date):
